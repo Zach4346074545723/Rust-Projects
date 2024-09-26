@@ -77,8 +77,8 @@ fn mandelbrot_looped(
     max_iterations
 }
 
-fn render_recursive(screen_width: u32, screen_height: u32, exponent: f64, max_iterations: u32){
-        let mut output = String::new();
+fn render_recursive(screen_width: u32, screen_height: u32, exponent: f64, max_iterations: u32) {
+    let mut output = String::new();
     for y in 0..screen_height {
         for x in 0..screen_width {
             let centered_and_normalized = ComplexNumber::new(
