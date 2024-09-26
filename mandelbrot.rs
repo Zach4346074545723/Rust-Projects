@@ -67,7 +67,7 @@ fn mandelbrot_looped(
 ) -> u32 {
     let mut current_point = z;
 
-    for iterations in 1..=max_iterations {
+    for iterations in 0..=max_iterations {
         if current_point.real.hypot(current_point.imaginary) > 2.0 {
             return iterations;
         }
