@@ -83,7 +83,8 @@ impl Operation {
             Self::Mul(left, right) => {
                 let left = *left;
                 let right = *right;
-                left.clone() * right.clone().symbolic_derivative() + left.symbolic_derivative() * right
+                left.clone() * right.clone().symbolic_derivative()
+                    + left.symbolic_derivative() * right
             }
             Self::Div(left, right) => {
                 let left = *left;
