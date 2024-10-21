@@ -29,7 +29,7 @@ impl Board{
                 mid,
                 bot,
             } => {
-                let (first,rest) = coord.split_first().unwrap();
+                let (first,rest) = coord.split_first().expect("todo");
                 match first{
                     1 => top.get(rest),
                     0 => mid.get(rest),
@@ -48,7 +48,7 @@ impl Board{
                 mid,
                 bot,
             } => {
-                let (first,rest) = coord.split_first().unwrap();
+                let (first,rest) = coord.split_first().expect("todo");
                 match first{
                     1 => top.set(rest,item),
                     0 => mid.set(rest,item),
