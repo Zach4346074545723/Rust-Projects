@@ -1,4 +1,6 @@
-#[derive(Debug)]
+use rand::prelude::*;
+
+#[derive(Debug,PartialEq)]
 enum Cell{
     Empty,
     Filled,
@@ -142,28 +144,58 @@ impl Board{
                 
                 let cell = self.get(final_coordinates.as_slice());
                 
-                print!("[{cell}]");
+                if cell == &Cell::Empty{
+                    print!("- ")
+                }else{
+                    print!("{cell} ")
+                }
                 
-                if even_coordinate.last() == Some(&1i8){
-                    print!("  ")
+                for even in even_coordinate.iter().rev(){
+                    if *even == 1{
+                        print!("  ")
+                    }else{
+                        break;
+                    }
                 }
             }
-            
-            if odd_coordinate.last() == Some(&-1i8){
-                println!()
+            println!();
+            for odd in odd_coordinate.iter().rev(){
+                    if *odd == -1{
+                        println!()
+                    }else{
+                        break;
+                    }
             }
-            println!()
         }
     }
 }
 
 fn main(){
-    let mut board = Board::new(3);
+    let mut board = Board::new(6);
     
-    board.set(&[0,0,0],Cell::Filled);
-    board.set(&[0,1,0],Cell::X);
-    board.set(&[1,0,1],Cell::O);
-    board.set(&[0,1,-1],Cell::X);
+    let dimension = board.get_dimension() as usize;
+    
+    let mut generator = rand::thread_rng();
+    
+    for _ in 0..100{
+        let mut coord = vec![0i8;dimension];
+        
+        loop{
+            for mut n in coord.iter_mut(){
+                *n = generator.gen_range(-1..=1);
+            }
+            if board.get(coord.as_slice()) != &Cell::Filled{
+                break
+            }
+        }
+        let cell = match generator.gen_range(0..=2u8){
+            0 => Cell::Filled,
+            1 => Cell::X,
+            2 => Cell::O,
+            _ => unreachable!()
+        };
+        board.set(coord.as_slice(),cell);
+    }
     
     board.print();
 }
