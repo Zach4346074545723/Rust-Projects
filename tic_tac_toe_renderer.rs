@@ -11,7 +11,7 @@ enum Cell{
 impl std::fmt::Display for Cell{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let symbol = match self{
-            Self::Empty => ' ',
+            Self::Empty => '-',
             Self::Filled => '#',
             Self::X => 'X',
             Self::O => 'O'
@@ -144,12 +144,9 @@ impl Board{
                 
                 let cell = self.get(final_coordinates.as_slice());
                 
-                if cell == &Cell::Empty{
-                    print!("- ")
-                }else{
-                    print!("{cell} ")
-                }
+                print!("{cell}");
                 
+                print!(" ");
                 for even in even_coordinate.iter().rev(){
                     if *even == 1{
                         print!("  ")
@@ -160,24 +157,24 @@ impl Board{
             }
             println!();
             for odd in odd_coordinate.iter().rev(){
-                    if *odd == -1{
-                        println!()
-                    }else{
-                        break;
-                    }
+                if *odd == -1{
+                    println!()
+                }else{
+                    break;
+                }
             }
         }
     }
 }
 
 fn main(){
-    let mut board = Board::new(6);
+    let mut board = Board::new(4);
     
     let dimension = board.get_dimension() as usize;
     
     let mut generator = rand::thread_rng();
     
-    for _ in 0..100{
+    for _ in 0..15{
         let mut coord = vec![0i8;dimension];
         
         loop{
@@ -188,12 +185,7 @@ fn main(){
                 break
             }
         }
-        let cell = match generator.gen_range(0..=2u8){
-            0 => Cell::Filled,
-            1 => Cell::X,
-            2 => Cell::O,
-            _ => unreachable!()
-        };
+        let cell = Cell::Filled;
         board.set(coord.as_slice(),cell);
     }
     
