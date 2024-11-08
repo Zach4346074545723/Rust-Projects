@@ -11,8 +11,8 @@ enum Cell{
 impl std::fmt::Display for Cell{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let symbol = match self{
-            Self::Empty => '-',
-            Self::Filled => '#',
+            Self::Empty => '.',
+            Self::Filled => '=',
             Self::X => 'X',
             Self::O => 'O'
         };
@@ -70,11 +70,10 @@ impl Board{
                 mid,
                 bot,
             } => {
-                let (first,rest) = coord.split_first().expect("todo");
-                match first{
-                    1 => top.set(rest,item),
-                    0 => mid.set(rest,item),
-                    -1=> bot.set(rest,item),
+                match coord.get(0).expect("todo"){
+                    1 => top.set(&coord[1..],item),
+                    0 => mid.set(&coord[1..],item),
+                    -1=> bot.set(&coord[1..],item),
                     _ => todo!(),
                 }
             }
@@ -106,23 +105,31 @@ impl Board{
         Self::generate_coordinate(&mut list_of_coords, &mut changing_coordinate, self.get_dimension().div_ceil(2));
         list_of_coords
     }
+
+    fn generate_list_of_coordinates(&self, even: bool) -> Vec<Vec<i8>>{
+        let mut list_of_coords = Vec::new();
+        let mut changing_coordinate = Vec::new();
+        let dimensions = (self.get_dimension() + if even{1}else{0}) / 2;
+        Self::generate_coordinate(&mut list_of_coords, &mut changing_coordinate, dimensions);
+        if !even{list_of_coords.reverse();}
+        list_of_coords
+    }
     
     fn generate_coordinate(list_of_coordinates: &mut Vec<Vec<i8>>, current_coordinate: &mut Vec<i8>, dimensions_left: u8){
         if dimensions_left == 0{
             list_of_coordinates.push(current_coordinate.to_owned());
-            return
-        }
-        
-        for n in -1..=1{
-            current_coordinate.push(n);
-            Self::generate_coordinate(list_of_coordinates, current_coordinate, dimensions_left - 1);
-            current_coordinate.pop();
+        }else{
+            for n in -1..=1{
+                current_coordinate.push(n);
+                Self::generate_coordinate(list_of_coordinates, current_coordinate, dimensions_left - 1);
+                current_coordinate.pop();
+            }
         }
     }
     
     fn print(&self){
-        for odd_coordinate in self.generate_list_of_odd_coordinates(){
-            for even_coordinate in self.generate_list_of_even_coordinates(){
+        for odd_coordinate in self.generate_list_of_coordinates(false){
+            for even_coordinate in self.generate_list_of_coordinates(true){
                 let mut final_coordinates = Vec::new();
                 
                 let mut current_odd_coordinate = odd_coordinate.clone();
@@ -174,7 +181,7 @@ fn main(){
     
     let mut generator = rand::thread_rng();
     
-    for _ in 0..15{
+    for _ in 0..(3usize).pow(dimension as u32 - 1){
         let mut coord = vec![0i8;dimension];
         
         loop{
@@ -191,3 +198,4 @@ fn main(){
     
     board.print();
 }
+
